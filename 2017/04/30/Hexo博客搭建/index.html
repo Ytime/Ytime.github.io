@@ -105,7 +105,7 @@
 <meta property="og:image" content="http://ogvm9vr0q.bkt.clouddn.com/blog/20170430/repoCreate.png">
 <meta property="og:image" content="http://ogvm9vr0q.bkt.clouddn.com/blog/20170430/ssh.png">
 <meta property="og:image" content="http://ogvm9vr0q.bkt.clouddn.com/blog/20170430/host2.png">
-<meta property="og:updated_time" content="2017-05-02T14:22:45.324Z">
+<meta property="og:updated_time" content="2017-05-04T05:58:53.153Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hexo博客搭建">
 <meta name="twitter:description" content="摘要网上已经有很多使用 Hexo 搭建博客的教程了，这些教程都是非常详细的。我本人也是按照这些教程搭建出属于自己的博客，不过一方面实际操作中会因为生产环境的不同，搭建博客会遇到很多坑，一方面也是自己这几天学习的总结，还是在这里总结并分享自己的经验，毕竟从同是小白的我眼中更容易关注到新手会遇到的问题。首先是基于 Hexo+Github 的方式搭建。">
@@ -435,7 +435,7 @@
 <blockquote>
 <p>Linux/Mac系统在 <code>~/.ssh</code> 下，win系统(我的是win10)在<code>c/user/username/.ssh</code>下<br>使用Git Bash查看ssh文件<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ls ~/.ssh</div></pre></td></tr></table></figure></p>
 </blockquote>
-<p>查看是否已经有id_rsa.pub和id_rsa两个文件，id_rsa.pub是公钥，id_rsa是私钥。如果有可以跳过下一步生成SSH Key,或者直接生成覆盖。<br>使用<code>sh-keygen</code>命令生成Key<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 生成SSH Key</span></div><div class="line">sh-keygen -t rsa</div></pre></td></tr></table></figure></p>
+<p>查看是否已经有id_rsa.pub和id_rsa两个文件，id_rsa.pub是公钥，id_rsa是私钥。如果有可以跳过下一步生成SSH Key,或者直接生成覆盖。<br>使用<code>sh-keygen</code>命令生成Key<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 生成SSH Key</span></div><div class="line">ssh-keygen -t rsa</div></pre></td></tr></table></figure></p>
 <blockquote>
 <p>回车确认后，接着会提示输入两次密码，该密码是私钥的密码，在使用密钥的时候需要使用，如push的时候需要输入该密码。如果填写了，请记住。也可以一路回车，则默认密码为空。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Enter passphrase (empty <span class="keyword">for</span> no passphrase):</div><div class="line"><span class="comment"># Enter same passphrase again:</span></div></pre></td></tr></table></figure></p>
 </blockquote>
