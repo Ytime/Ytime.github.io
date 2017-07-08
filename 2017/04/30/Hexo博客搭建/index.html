@@ -104,8 +104,9 @@
 <meta property="og:image" content="http://ogvm9vr0q.bkt.clouddn.com/blog/20170430/PID2.PNG">
 <meta property="og:image" content="http://ogvm9vr0q.bkt.clouddn.com/blog/20170430/repoCreate.png">
 <meta property="og:image" content="http://ogvm9vr0q.bkt.clouddn.com/blog/20170430/ssh.png">
+<meta property="og:image" content="http://ogvm9vr0q.bkt.clouddn.com/blog/20170430/repo_url.png">
 <meta property="og:image" content="http://ogvm9vr0q.bkt.clouddn.com/blog/20170430/host2.png">
-<meta property="og:updated_time" content="2017-05-04T05:58:53.153Z">
+<meta property="og:updated_time" content="2017-06-15T01:10:26.440Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hexo博客搭建">
 <meta name="twitter:description" content="摘要网上已经有很多使用 Hexo 搭建博客的教程了，这些教程都是非常详细的。我本人也是按照这些教程搭建出属于自己的博客，不过一方面实际操作中会因为生产环境的不同，搭建博客会遇到很多坑，一方面也是自己这几天学习的总结，还是在这里总结并分享自己的经验，毕竟从同是小白的我眼中更容易关注到新手会遇到的问题。首先是基于 Hexo+Github 的方式搭建。">
@@ -437,8 +438,9 @@
 </blockquote>
 <p>查看是否已经有id_rsa.pub和id_rsa两个文件，id_rsa.pub是公钥，id_rsa是私钥。如果有可以跳过下一步生成SSH Key,或者直接生成覆盖。<br>使用<code>sh-keygen</code>命令生成Key<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 生成SSH Key</span></div><div class="line">ssh-keygen -t rsa</div></pre></td></tr></table></figure></p>
 <blockquote>
-<p>回车确认后，接着会提示输入两次密码，该密码是私钥的密码，在使用密钥的时候需要使用，如push的时候需要输入该密码。如果填写了，请记住。也可以一路回车，则默认密码为空。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Enter passphrase (empty <span class="keyword">for</span> no passphrase):</div><div class="line"><span class="comment"># Enter same passphrase again:</span></div></pre></td></tr></table></figure></p>
+<p>回车确认后，接着会提示输入两次密码，该密码是私钥的密码，在使用密钥的时候需要使用，如push的时候需要输入该密码。如果填写了，请记住。也可以一路回车，则默认密码为空。</p>
 </blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Enter passphrase (empty <span class="keyword">for</span> no passphrase):</div><div class="line"><span class="comment"># Enter same passphrase again:</span></div></pre></td></tr></table></figure>
 <p>接着复制公钥id_rsa.pub的内容，使用编辑器或者命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">clip &lt; ~/.ssh/id_rsa.pub</div></pre></td></tr></table></figure></p>
 <p>登录Github账号，从用户的Setting -&gt; 菜单栏SSH and GPG Keys -&gt; New SSH Key 进入，粘贴复制的key添加成功。有多台电脑可以使用同样的方法添加多个，并且可以在<code>title</code>栏填写区分</p>
 <p><img src="http://ogvm9vr0q.bkt.clouddn.com/blog/20170430/ssh.png" alt="SSH Key"></p>
@@ -447,7 +449,12 @@
 <blockquote>
 <p>如果设置SSH Key的时候设置了密码，中间也需要密码</p>
 </blockquote>
-<h3 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h3><p>终于到部署这一步了，是不是很期待呢？<br>在blog项目中的_config.yml文件是配置文件，我们按以下方式填写<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Deployment</span></div><div class="line"><span class="comment">## Docs: https://hexo.io/docs/deployment.html</span></div><div class="line">deploy:</div><div class="line">  <span class="built_in">type</span>: git</div><div class="line"><span class="comment"># 仓库名字 </span></div><div class="line">  repo: git@github.com:username/uername.github.io.git</div><div class="line">  branch: master</div><div class="line">``` </div><div class="line">&gt;repo填写Github创建的仓库名字，点击仓库页面的**Clone or download**处复制SSH形式url</div><div class="line"></div><div class="line">![仓库地址](http://ogvm9vr0q.bkt.clouddn.com/blog/20170430/repo_url.png)</div><div class="line">配置好后执行部署命令：</div><div class="line">```bash</div><div class="line">hexo generate <span class="comment"># 生成静态页面，或者hexo g</span></div><div class="line">hexo deploy   <span class="comment"># 部署到Github，或者hexo d</span></div></pre></td></tr></table></figure></p>
+<h3 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h3><p>终于到部署这一步了，是不是很期待呢？<br>在blog项目中的_config.yml文件是配置文件，我们按以下方式填写<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Deployment</span></div><div class="line"><span class="comment">## Docs: https://hexo.io/docs/deployment.html</span></div><div class="line">deploy:</div><div class="line">  <span class="built_in">type</span>: git</div><div class="line"><span class="comment"># 仓库名字 </span></div><div class="line">  repo: git@github.com:username/uername.github.io.git</div><div class="line">  branch: master</div></pre></td></tr></table></figure></p>
+<blockquote>
+<p>repo填写Github创建的仓库名字，点击仓库页面的<strong>Clone or download</strong>处复制SSH形式url</p>
+</blockquote>
+<p><img src="http://ogvm9vr0q.bkt.clouddn.com/blog/20170430/repo_url.png" alt="仓库地址"></p>
+<p>配置好后执行部署命令：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">hexo generate <span class="comment"># 生成静态页面，或者hexo g</span></div><div class="line">hexo deploy   <span class="comment"># 部署到Github，或者hexo d</span></div></pre></td></tr></table></figure></p>
 <p>如果出现下面的提示表示成功<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">INFO Deploy done: git</div></pre></td></tr></table></figure></p>
 <p>这时候浏览器访问<code>uername.github.io</code>，就可以访问自己的博客了。到此博客就算基本搭建好了。</p>
 <blockquote>
@@ -590,7 +597,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-count">5</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -601,7 +608,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-count">4</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -612,7 +619,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-count">11</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -842,6 +849,8 @@
   
 
   
+  
+
 
   
 

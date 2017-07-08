@@ -1,0 +1,846 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="HTML5,图像处理,canvas," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="HTML5新增加的最重要的一个元素，我认为非canvas莫属了。canvas就相当于一个画布，在这上面可以随意进行绘图，还可以显示3D场景和模型。通过canvas可以获取img的像素信息，用来做图像处理自然也不在话下了。">
+<meta name="keywords" content="HTML5,图像处理,canvas">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于canvas实现图像处理">
+<meta property="og:url" content="http://yoursite.com/2017/07/05/基于canvas实现图像处理/index.html">
+<meta property="og:site_name" content="Jian&#39;s Blog">
+<meta property="og:description" content="HTML5新增加的最重要的一个元素，我认为非canvas莫属了。canvas就相当于一个画布，在这上面可以随意进行绘图，还可以显示3D场景和模型。通过canvas可以获取img的像素信息，用来做图像处理自然也不在话下了。">
+<meta property="og:image" content="https://mdn.mozillademos.org/files/225/Canvas_drawimage.jpg">
+<meta property="og:image" content="http://ogvm9vr0q.bkt.clouddn.com/blog/20170705/origin.png">
+<meta property="og:image" content="http://ogvm9vr0q.bkt.clouddn.com/blog/20170705/grey.png">
+<meta property="og:image" content="http://img.blog.csdn.net/20151012211045222?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:image" content="http://ogvm9vr0q.bkt.clouddn.com/blog/20170705/origin2.png">
+<meta property="og:image" content="http://ogvm9vr0q.bkt.clouddn.com/blog/20170705/sharpen.png">
+<meta property="og:image" content="http://ogvm9vr0q.bkt.clouddn.com/blog/20170705/custom_mat.png">
+<meta property="og:image" content="http://ogvm9vr0q.bkt.clouddn.com/blog/20170705/custom.png">
+<meta property="og:image" content="http://ogvm9vr0q.bkt.clouddn.com/blog/20170705/origin3.jpg">
+<meta property="og:image" content="http://ogvm9vr0q.bkt.clouddn.com/blog/20170705/sketch.png">
+<meta property="og:updated_time" content="2017-07-08T11:21:54.101Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于canvas实现图像处理">
+<meta name="twitter:description" content="HTML5新增加的最重要的一个元素，我认为非canvas莫属了。canvas就相当于一个画布，在这上面可以随意进行绘图，还可以显示3D场景和模型。通过canvas可以获取img的像素信息，用来做图像处理自然也不在话下了。">
+<meta name="twitter:image" content="https://mdn.mozillademos.org/files/225/Canvas_drawimage.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/07/05/基于canvas实现图像处理/"/>
+
+
+
+
+
+  <title>基于canvas实现图像处理 | Jian's Blog</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Jian's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/05/基于canvas实现图像处理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jian">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jian's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                基于canvas实现图像处理
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-05T15:57:05+08:00">
+                2017-07-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/js/" itemprop="url" rel="index">
+                    <span itemprop="name">js</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/js/HTML5/" itemprop="url" rel="index">
+                    <span itemprop="name">HTML5</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>HTML5新增加的最重要的一个元素，我认为非<code>canvas</code>莫属了。canvas就相当于一个画布，在这上面可以随意进行绘图，还可以显示3D场景和模型。通过<code>canvas</code>可以获取<code>img</code>的像素信息，用来做图像处理自然也不在话下了。<br><a id="more"></a></p>
+<h2 id="canvas元素"><a href="#canvas元素" class="headerlink" title="canvas元素"></a>canvas元素</h2><p><code>&lt;canvas&gt;</code>看起来和<code>&lt;img&gt;</code>元素很相像，唯一的不同就是它并没有<code>src</code>和<code>alt</code>属性。实际上，<code>&lt;canvas&gt;</code>标签只有两个属性——<code>width</code>和<code>height</code>。可以通过<code>DOM</code>或<code>CSS</code>设置。<code>&lt;canvas&gt;</code>本质上和其他元素也没有什么不同，依然可以使用<code>CSS</code>设置其他样式。要注意的是，如果不想内容被拉伸变形，应该尽量设置同比例的宽高。</p>
+<blockquote>
+<p>当没有设置宽度和高度的时候，<code>canvas</code>会初始化宽度为300像素和高度为150像素。该元素可以使用<code>CSS</code>来定义大小，但在绘制时图像会伸缩以适应它的框架尺寸：如果<code>CSS</code>的尺寸与初始画布的比例不一致，它会出现扭曲。</p>
+</blockquote>
+<h3 id="替换内容"><a href="#替换内容" class="headerlink" title="替换内容"></a>替换内容</h3><p><code>canvas</code>只在现代浏览器中支持，如IE8以下不兼容，常用备用的替换内容作为提示或备选方案。原理是支持<code>canvas</code>的浏览器会忽略<code>canvas</code>标签内的内容，并且只正常渲染<code>canvas</code>，而不支持的浏览器会渲染<code>canvas</code>的内容，如下面所示，提示文字只有在不支持<code>canvas</code>的浏览器中才会显示。<br><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">canvas</span>&gt;</span>你的浏览器不支持canvas<span class="tag">&lt;<span class="name">canvas</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<h3 id="渲染上下文"><a href="#渲染上下文" class="headerlink" title="渲染上下文"></a>渲染上下文</h3><p>每个<code>canvas</code>元素都有一个对应的<code>context</code>对象（上下文对象），Canvas的API定义在这个<code>context</code>对象上面，所以需要获取这个对象，方法是使用<code>getContext</code>方法。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> canvas = <span class="built_in">document</span>.getElementById(<span class="string">'canvasID'</span>);</div><div class="line"><span class="keyword">var</span> ctx = canvas.getContext(<span class="string">'2d'</span>);</div></pre></td></tr></table></figure></p>
+<p><code>getContext</code>只有一个参数，就是标示上下文的格式，如2D图像使用<code>“2d”</code>。如果参数是<code>“3d”</code>，就表示用于生成3D图像，这部分实际上单独叫做<code>WebGL API</code>。通过检查<code>getContext</code>方法存在性，也可以检查<code>canvas</code>的特性支持<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> canvas = <span class="built_in">document</span>.getElementById(<span class="string">'canvasID'</span>);</div><div class="line"></div><div class="line"><span class="keyword">if</span> (canvas.getContext)&#123;</div><div class="line">    <span class="keyword">var</span> ctx = canvas.getContext(<span class="string">'2d'</span>);</div><div class="line">    <span class="comment">// 渲染canvas 代码</span></div><div class="line">&#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="comment">// 不兼容的代码</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="与图像处理相关的API"><a href="#与图像处理相关的API" class="headerlink" title="与图像处理相关的API"></a>与图像处理相关的API</h3><p>本文只着重介绍与图像处理的API，其他API参考MDN的<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Canvas_API/Tutorial" title="Canvas教程" target="_blank" rel="external">Canvas教程</a>。<code>canvas</code>拥有强大的图像操作能力，常用的有以下方法：</p>
+<h4 id="drawImage"><a href="#drawImage" class="headerlink" title="drawImage()"></a>drawImage()</h4><p>使用<code>drawImage</code>，<code>canvas</code>可以将图像源插入画布，在<code>canvas</code>上进行重绘。<code>drawImage</code>语法<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> ctx.drawImage(image, dx, dy);</div><div class="line"><span class="keyword">void</span> ctx.drawImage(image, dx, dy, dWidth, dHeight);</div><div class="line"><span class="keyword">void</span> ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);</div></pre></td></tr></table></figure></p>
+<ul>
+<li>image<br><code>image</code>是图像源，即要被绘制到<code>canvas</code>上的对象。可以是<code>HTMLImageElement</code>、<code>HTMLVideoElement</code>、<code>HTMLCanvasElement</code>、<code>ImageBitmap</code>中的任何一种，意味着页面是页面上的<code>&lt;img&gt;</code>、<code>&lt;video&gt;</code>以及<code>&lt;canvas&gt;</code>元素，也可以使用脚本创建的，如<code>Image()</code>构造函数创建的<code>HTMLImageElement</code>对象。</li>
+<li>dx<br>图像源的左上角在目标<code>canvas</code>上X轴的位置</li>
+<li>dy<br>图像源的左上角在目标<code>canvas</code>上Y轴的位置</li>
+<li>dWidth<br>图像源在<code>canvas</code>上的宽度，会对图像进行缩放。如果不说明则绘制的图片源宽度不会缩放</li>
+<li>dHeight<br>图像源在<code>canvas</code>上的高度，会对图像进行缩放。如果不说明则绘制的图片源高度不会缩放</li>
+<li>sx<br>图像源矩阵选择框左上角x坐标</li>
+<li>sy<br>图像源矩阵选择框左上角y坐标</li>
+<li>sWidth<br>图像源矩阵选择框宽度，默认是sx到图像右下角的X轴距离</li>
+<li>sHeight<br>图像源矩阵选择框高度，默认是sy到图像右下角的Y轴距离</li>
+</ul>
+<p>是不是有点绕，其实就是在图像源上通过一个矩阵框选择部分放置到<code>canvas</code>上的一个矩阵框中，两个矩形框都是通过左上角的坐标(x,y)和矩形宽高决定。参考下面的示意图，需要注意的是设置<code>dWidth</code>和<code>dHeight</code>会使图像缩放而导致变形。<br><img src="https://mdn.mozillademos.org/files/225/Canvas_drawimage.jpg" alt="drawImage示意图"><br>下面是一个9个参数的demo，黑色框是<code>canvas</code>的边框。</p>
+<iframe width="100%" height="500" src="//jsrun.net/PzYKp/embedded/result/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+<h4 id="getImageData"><a href="#getImageData" class="headerlink" title="getImageData()"></a>getImageData()</h4><p><code>getImageData()</code>方法可以获得<code>canvas</code>的内容，返回一个<code>imageData</code>对象。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ImageData ctx.getImageData(sx, sy, sw, sh);</div></pre></td></tr></table></figure></p>
+<p><code>imageData</code>对象，只包含<code>width</code>、<code>height</code>和<code>data</code>属性。<code>data</code>它的值是一个一维数组。该数组的值，依次是每个像素的（R）、绿（G）、蓝（B）、不透明度（alpha通道 A）的值，每个值的范围是0–255。因此该数组的长度等于图像的像素宽度 x 图像的像素高度 x 4。这个数组不仅可读，而且可写，因此通过操作这个数组的值，就可以达到操作图像的目的。</p>
+<blockquote>
+<p>同<code>drawImage()</code>一样，<code>getImageData()</code>方法的四个参数分别表示要获取的矩阵框大小的内容，<code>sx</code>，<code>sy</code>表示矩阵框的起始位置，<code>sw</code>, <code>sh</code>分别表示矩形框的宽高。</p>
+</blockquote>
+<h4 id="putImageData"><a href="#putImageData" class="headerlink" title="putImageData()"></a>putImageData()</h4><p><code>putImageData()</code>是与<code>getImageData()</code>相反的操作，<code>putImageData()</code>把一个<code>imageData</code>对象绘制到<code>canvas</code>中<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> ctx.putImageData(imagedata, dx, dy);</div><div class="line"><span class="keyword">void</span> ctx.putImageData(imagedata, dx, dy, sx, sy, sWidth, sHeight);</div></pre></td></tr></table></figure></p>
+<blockquote>
+<p><code>dx</code>，<code>dy</code>表示<code>imageData</code>对象在<code>canvas</code>中绘制的起始点，<code>sx</code>, <code>sy</code>, <code>sWidth</code>, <code>sHeight</code>确定要绘制在<code>canvas</code>上的<code>imageData</code>对象的矩形大小</p>
+</blockquote>
+<h2 id="图像处理实现"><a href="#图像处理实现" class="headerlink" title="图像处理实现"></a>图像处理实现</h2><p>网页图片为RGBA模式，即每一像素分别由红（R）、绿（G）、蓝（B）、不透明度（alpha通道 A）构成，每个值有256种（0-255）。根据一定的算法改变每个像素的值，生成的新图像就有了相应的变化。本文使用两种类型的算法，一种是像素处理是独立的，另一种是每个像素点处理结果与周围像素点相关的滤波处理。<br>本文的算法主要参考以下两篇博文<br><a href="https://www.html5rocks.com/en/tutorials/canvas/imagefilters/" title="Image Filters with Canvas" target="_blank" rel="external">Image Filters with Canvas</a><br><a href="http://blog.csdn.net/zouxy09/article/details/49080029" title="图像卷积与滤波的一些知识点" target="_blank" rel="external">图像卷积与滤波的一些知识点</a></p>
+<h3 id="简单图像处理"><a href="#简单图像处理" class="headerlink" title="简单图像处理"></a>简单图像处理</h3><p>我们先看看简单的图像处理，一般使用一个公式遍历处理每个像素点就可以了，如<strong>灰度</strong></p>
+<p>灰度就是去色。不考虑A值，一般的处理方法是将图片颜色值的RGB三个通道值设为一样，这样原本的256*256*256种颜色就只有256种了，即只剩下亮度值。一般有三种算法：最大值、平均值、加权平均。这里我们用加权法：一般由于人眼对不同颜色的敏感度不一样，所以三种颜色值的权重不一样，一般来说绿色最高，红色其次，蓝色最低，最合理的取值分别为30％，59％，11％。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//灰度</span></div><div class="line">greyScale(imgData) &#123;</div><div class="line">    <span class="comment">//图片像素数据</span></div><div class="line">    imgData = imgData || <span class="keyword">this</span>.getImageData();</div><div class="line">    <span class="keyword">let</span> data = imgData.data,</div><div class="line">        r, g, b, v;</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>, len = data.length; i &lt; len; i += <span class="number">4</span>)&#123;</div><div class="line">        r = data[i]; g = data[i + <span class="number">1</span>]; b = data[i + <span class="number">2</span>];</div><div class="line">        <span class="comment">//加权取值</span></div><div class="line">        v = <span class="number">.299</span> * r + <span class="number">.587</span> * g + <span class="number">.114</span> * b;</div><div class="line">        data[i] = data[i + <span class="number">1</span>] = data[i + <span class="number">2</span>] = v;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> imgData;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>原图<br><img src="http://ogvm9vr0q.bkt.clouddn.com/blog/20170705/origin.png" alt="原图"><br>应用灰度去色后效果<br><img src="http://ogvm9vr0q.bkt.clouddn.com/blog/20170705/grey.png" alt="灰度"></p>
+<h3 id="线性滤波与矩阵卷积"><a href="#线性滤波与矩阵卷积" class="headerlink" title="线性滤波与矩阵卷积"></a>线性滤波与矩阵卷积</h3><p>前面介绍的处理都是每个像素独立的处理，实际上我们还可以把每个像素周围的像素信息也用起来做线性叠加操作，这就是线性滤波。线性滤波可以说是图像处理最基本的方法，它可以允许我们对图像进行处理，产生很多不同的效果。中间像素和它的领域像素的线性叠加可以用一个矩阵（卷积核）来表示，如图是应用一个二维3*3滤波器对二维图像进行处理的示意图。如图，对源图像中的每一个像素点和该点周围8个像素共9个点，与卷积核对应相乘并累加，最终的值作为中心点的新值，这就是卷积。<br><img src="http://img.blog.csdn.net/20151012211045222?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="矩阵计算"></p>
+<blockquote>
+<p>矩阵卷积过程中，每次计算新的像素值，使用的都是源图像的像素值，而不是滤波后的值。<br>一般来说为了保证有中心点，矩阵应该是奇数阶。<br>需要保证原像素的亮度滤波前后亮度一致时，则矩阵核和应该为0</p>
+</blockquote>
+<h4 id="边界处理"><a href="#边界处理" class="headerlink" title="边界处理"></a>边界处理</h4><p>因为矩阵核每次计算只能得到中心的值，如果遇到在边界的像素，怎么办？一般的简单处理方法有4种：</p>
+<ul>
+<li>填充0<br>不够的像素，用0来填充</li>
+<li>用边界像素值拓展<br>这种方案是认为图像是无限大的，我们使用的只是一部分，边界外的像素值与边界的值是近似的。出于这种思想，我们自然可以用边界值代替</li>
+<li>周期拓展<br>周期拓展是认为图像是像平铺一样周期性重复的，左边界与右边界相接，上边界与下边界相邻。</li>
+<li>不处理</li>
+</ul>
+<h4 id="矩阵核应用"><a href="#矩阵核应用" class="headerlink" title="矩阵核应用"></a>矩阵核应用</h4><p>为了应用矩阵核，我们编写一个函数处理<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 卷积核应用</div><div class="line"> *</div><div class="line"> * @param    &#123;array&#125;   mat          卷积矩阵，一维数组表示</div><div class="line"> * @param    &#123;object&#125;  imgData      要处理的imageData对象</div><div class="line"> * @param    &#123;number&#125;  divisor      可选，对卷积后数值归一化系数，默认为1，</div><div class="line"> * @param    &#123;number&#125;  order        可选，卷积核的阶数，默认为3</div><div class="line"> * @returns  &#123;object&#125;  outputImg    处理后的imageData对象</div><div class="line"> *</div><div class="line"> */</div><div class="line">conv(mat, imgData, order = <span class="number">3</span>, divisor = <span class="number">1</span>)&#123;</div><div class="line"></div><div class="line">    imgData = imgData || <span class="keyword">this</span>.getImageData();</div><div class="line">    <span class="keyword">let</span> data = imgData.data,</div><div class="line">        w = <span class="keyword">this</span>.width,</div><div class="line">        h = <span class="keyword">this</span>.height,</div><div class="line">        outputImg = <span class="keyword">this</span>.ctx.createImageData(w, h),</div><div class="line">        outData = outputImg.data,</div><div class="line">        radius = <span class="built_in">Math</span>.floor(order  / <span class="number">2</span>);</div><div class="line"></div><div class="line">    <span class="comment">//先遍历图片像素(x, y)</span></div><div class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> y = <span class="number">0</span>; y &lt; h; y++)&#123;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">let</span> x = <span class="number">0</span>; x &lt; w; x++)&#123;</div><div class="line">            <span class="comment">//遍历r,g,b三通道，做一样的处理</span></div><div class="line">            <span class="keyword">for</span>(<span class="keyword">let</span> z = <span class="number">0</span>; z &lt; <span class="number">3</span>; z++)&#123;</div><div class="line">                <span class="comment">//中心点像素(x, y)在data中的索引</span></div><div class="line">                <span class="keyword">let</span> i = (y * w + x) * <span class="number">4</span> + z;</div><div class="line"></div><div class="line">                <span class="comment">//边界处理使用最简单的方法，即不做处理</span></div><div class="line">                <span class="keyword">if</span> (x &lt; radius || y &lt; radius || x &gt;= w - radius || y &gt;= h - radius)&#123;</div><div class="line">                    outData[i] = data[i];</div><div class="line">                &#125;</div><div class="line">                <span class="comment">//非边界处矩阵卷积</span></div><div class="line">                <span class="keyword">else</span>&#123;</div><div class="line">                    <span class="comment">//卷积和</span></div><div class="line">                    <span class="keyword">let</span> convSum = <span class="number">0</span>,</div><div class="line">                        matIndex = <span class="number">0</span>;</div><div class="line">                    <span class="comment">//遍历矩阵行</span></div><div class="line">                    <span class="keyword">for</span> (<span class="keyword">let</span> m = -radius; m &lt;= radius; m++ )&#123;</div><div class="line">                        <span class="comment">//矩阵列 (x-m,y)</span></div><div class="line">                        <span class="keyword">let</span> rowIndex = i + w*<span class="number">4</span>*m;</div><div class="line"></div><div class="line">                        <span class="keyword">for</span> (<span class="keyword">let</span> n = -radius; n &lt;= radius; n++)&#123;</div><div class="line">                            <span class="comment">//(x-m, y-n)</span></div><div class="line">                            <span class="keyword">let</span> colIndex = rowIndex + n*<span class="number">4</span>;</div><div class="line">                            convSum += mat[matIndex] * data[colIndex];</div><div class="line">                            matIndex++;</div><div class="line"></div><div class="line">                        &#125;</div><div class="line">                    &#125;</div><div class="line">                    outData[i] = convSum / divisor;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            <span class="comment">// 设置透明度</span></div><div class="line">            outData[(y * w + x) * <span class="number">4</span> + <span class="number">3</span>] = <span class="number">255</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> outputImg;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>现在来看看应用一个锐化矩阵的效果<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">conv([<span class="number">0</span>, <span class="number">-1</span>, <span class="number">0</span>, <span class="number">-1</span>, <span class="number">5</span>, <span class="number">-1</span>, <span class="number">0</span>, <span class="number">-1</span>, <span class="number">0</span>], imgData);</div></pre></td></tr></table></figure></p>
+<p>原图<br><img src="http://ogvm9vr0q.bkt.clouddn.com/blog/20170705/origin2.png" alt="原图"><br>锐化效果<br><img src="http://ogvm9vr0q.bkt.clouddn.com/blog/20170705/sharpen.png" alt="锐化"><br>矩阵核多种多样，有常见的浮雕、锐化、模糊等，当然也可以自己定义。比如这个我自己随便设置如下加亮矩阵<br><img src="http://ogvm9vr0q.bkt.clouddn.com/blog/20170705/custom_mat.png" alt="自定义矩阵"><br>效果如下<br><img src="http://ogvm9vr0q.bkt.clouddn.com/blog/20170705/custom.png" alt="自定义效果"></p>
+<h4 id="综合应用"><a href="#综合应用" class="headerlink" title="综合应用"></a>综合应用</h4><p>是不是越来越有意思啦？现在把之前的结合一起应用做个稍微复杂点的。来先把源图像变成灰度图<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> imgGrey = <span class="keyword">this</span>.greyScale(imgData);  <span class="comment">//灰度去色</span></div></pre></td></tr></table></figure></p>
+<p>灰度图我们后面需要继续用，所以复制一份保留。可以拷贝数组，但是还记得之前说的<code>putImageData()</code>和<code>getImageData()</code>吗？用它来得到一份新的imgData副本效率更高<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//img图像数据通过canvas复制一份</span></div><div class="line">copyImageData(imgData)&#123;</div><div class="line">    imgData = imgData || <span class="keyword">this</span>.getImageData();</div><div class="line">    <span class="keyword">let</span> canvas =  <span class="built_in">document</span>.createElement(<span class="string">'canvas'</span>),</div><div class="line">        ctx = canvas.getContext(<span class="string">'2d'</span>),</div><div class="line">        w = imgData.width,</div><div class="line">        h = imgData.height;</div><div class="line">    canvas.width = w;</div><div class="line">    canvas.height = h;</div><div class="line">    ctx.putImageData(imgData, <span class="number">0</span>, <span class="number">0</span>);</div><div class="line">    <span class="keyword">return</span> ctx.getImageData(<span class="number">0</span>, <span class="number">0</span>, w, h);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>有了副本，那么可以随意做其他处理了。对副本反相。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> imgGrey = <span class="keyword">this</span>.greyScale(imgData),  <span class="comment">//灰度去色</span></div><div class="line">    imgInvert = <span class="keyword">this</span>.invert(<span class="keyword">this</span>.copyImageData(imgGrey));  <span class="comment">//复制一份反向imgInvert</span></div></pre></td></tr></table></figure></p>
+<p>反相又是什么？反相又叫反色，就是我们常见的底片效果 ，实现也相当简单。用255-原来的像素值并代替原来像素的值就可以了。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//底片</span></div><div class="line">invert(imgData)&#123;</div><div class="line">    imgData = imgData || <span class="keyword">this</span>.getImageData();</div><div class="line">    <span class="keyword">let</span> data = imgData.data</div><div class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>, len = data.length; i &lt; len; i += <span class="number">4</span>)&#123;</div><div class="line">        data[i]     = <span class="number">255</span> - data[i];</div><div class="line">        data[i + <span class="number">1</span>] = <span class="number">255</span> - data[i + <span class="number">1</span>];</div><div class="line">        data[i + <span class="number">2</span>] = <span class="number">255</span> - data[i + <span class="number">2</span>];</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> imgData;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>反相后模糊处理。模糊滤波器就是对周围像素进行加权平均处理，均值模糊很简单，周围像素的权值都相同，所以不是很平滑。高斯模糊就有这个优点，所以被广泛用在图像降噪上。我们就选用高斯模糊。高斯模糊的计算可以参考<a href="http://blog.csdn.net/jiandanjinxin/article/details/51281828" title="高斯模糊的算法" target="_blank" rel="external">高斯模糊的算法</a><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 高斯模糊</div><div class="line"> * 理论值遵循3σ原则，一般σ = radius/3，这里根据效果适当调大，在较小的阶数下也能有比较好的效果</div><div class="line"> *</div><div class="line"> * @param    &#123;object&#125;  imgData      要处理的imageData对象</div><div class="line"> * @param    &#123;number&#125;  radius       可选，卷积核半径，默认为1，</div><div class="line"> * @param    &#123;number&#125;  sigma        可选，卷积核的阶数，默认为radius</div><div class="line"> * @returns  &#123;object&#125;  outputImg    处理后的imageData对象</div><div class="line"> *</div><div class="line"> */</div><div class="line">gaussBlur(imgData, radius = <span class="number">1</span>, sigma = radius)&#123;</div><div class="line">    imgData = imgData || <span class="keyword">this</span>.getImageData();</div><div class="line">    <span class="keyword">let</span> order = radius*<span class="number">2</span> + <span class="number">1</span>,</div><div class="line">        a = <span class="number">-1</span> / (<span class="number">2</span> * sigma * sigma),</div><div class="line">        b = -a / <span class="built_in">Math</span>.PI,</div><div class="line">        gaussMat = <span class="keyword">new</span> <span class="built_in">Array</span>(order * order),</div><div class="line">        gaussSum = <span class="number">0</span>;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> x = -radius, i = <span class="number">0</span>; x &lt;= radius; x++)&#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> y = -radius; y &lt;= radius; y++, i++)&#123;</div><div class="line">            gaussMat[i] = b * <span class="built_in">Math</span>.exp(a * (x*x + y*y));</div><div class="line">            gaussSum += gaussMat[i];</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.conv(gaussMat, imgData, order, gaussSum);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>嗯，只差最后一步了。把灰度图A和高斯模糊后的图像B进行图像混合，这一步是颜色减淡。千万别弄错顺序哦，上面的步骤也别弄混了（我按照网上某篇博文的算法死活弄不出来，结果是它的步骤顺序是错的），公式为<br>$$C =MIN( A + \frac{A×B}{255-B},255)$$<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> imgGrey = <span class="keyword">this</span>.greyScale(imgData),  <span class="comment">//灰度去色</span></div><div class="line">    imgInvert = <span class="keyword">this</span>.invert(<span class="keyword">this</span>.copyImageData(imgGrey)),  <span class="comment">//复制一份反向imgInvert</span></div><div class="line">    imgBlur = <span class="keyword">this</span>.gaussBlur(imgInvert), <span class="comment">//对imgInvert进行高斯模糊</span></div><div class="line">    data = imgGrey.data,</div><div class="line">    dataBlur = imgBlur.data,</div><div class="line">    v1, v2, v, k;</div><div class="line"><span class="comment">//颜色减淡</span></div><div class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>, len = data.length; i &lt; len; i += <span class="number">4</span>)&#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">0</span>; j &lt; <span class="number">3</span>; j++)&#123;</div><div class="line">        k = i + j;</div><div class="line">        v1 = data[k]; v2 = dataBlur[k];</div><div class="line">        v = v1 + v1 * v2 / (<span class="number">255</span> - v2);</div><div class="line">        v = v &gt; <span class="number">255</span> ? <span class="number">255</span> : v;</div><div class="line">        data[k] = v;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="keyword">return</span> imgGrey;</div></pre></td></tr></table></figure></p>
+<p>终于完成了，我们看看效果。<br>原图<br><img src="http://ogvm9vr0q.bkt.clouddn.com/blog/20170705/origin3.jpg" alt="原图"><br>处理后<br><img src="http://ogvm9vr0q.bkt.clouddn.com/blog/20170705/sketch.png" alt="素描"></p>
+<p>嗯，没错这就是素描效果。完整的应用请看<a href="imgFilter.ytime.me;" title="imgFilter">imgFilter</a><br>在搜集算法的时候看到一个效果很惊艳铅笔画算法，感兴趣的可以看看这边介绍的博文<br><a href="http://blog.csdn.net/bluecol/article/details/45422763" title="图像铅笔画算法" target="_blank" rel="external">图像铅笔画算法</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/HTML5/" rel="tag"># HTML5</a>
+          
+            <a href="/tags/图像处理/" rel="tag"># 图像处理</a>
+          
+            <a href="/tags/canvas/" rel="tag"># canvas</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/13/vue中实现拖放/" rel="next" title="Vue中实现拖放">
+                <i class="fa fa-chevron-left"></i> Vue中实现拖放
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.png"
+               alt="Jian" />
+          <p class="site-author-name" itemprop="name">Jian</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Ytime/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:752296035@qq.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#canvas元素"><span class="nav-number">1.</span> <span class="nav-text">canvas元素</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#替换内容"><span class="nav-number">1.1.</span> <span class="nav-text">替换内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#渲染上下文"><span class="nav-number">1.2.</span> <span class="nav-text">渲染上下文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#与图像处理相关的API"><span class="nav-number">1.3.</span> <span class="nav-text">与图像处理相关的API</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#drawImage"><span class="nav-number">1.3.1.</span> <span class="nav-text">drawImage()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#getImageData"><span class="nav-number">1.3.2.</span> <span class="nav-text">getImageData()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#putImageData"><span class="nav-number">1.3.3.</span> <span class="nav-text">putImageData()</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#图像处理实现"><span class="nav-number">2.</span> <span class="nav-text">图像处理实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简单图像处理"><span class="nav-number">2.1.</span> <span class="nav-text">简单图像处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线性滤波与矩阵卷积"><span class="nav-number">2.2.</span> <span class="nav-text">线性滤波与矩阵卷积</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#边界处理"><span class="nav-number">2.2.1.</span> <span class="nav-text">边界处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#矩阵核应用"><span class="nav-number">2.2.2.</span> <span class="nav-text">矩阵核应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#综合应用"><span class="nav-number">2.2.3.</span> <span class="nav-text">综合应用</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jian</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
