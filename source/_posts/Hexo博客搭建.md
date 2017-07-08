@@ -155,6 +155,7 @@ ssh-keygen -t rsa
 ```
 
 > 回车确认后，接着会提示输入两次密码，该密码是私钥的密码，在使用密钥的时候需要使用，如push的时候需要输入该密码。如果填写了，请记住。也可以一路回车，则默认密码为空。
+
 ```bash
 Enter passphrase (empty for no passphrase):
 # Enter same passphrase again:
@@ -180,7 +181,7 @@ Hi username! You've successfully authenticated, but GitHub does not provide shel
 ### 部署
 终于到部署这一步了，是不是很期待呢？
 在blog项目中的_config.yml文件是配置文件，我们按以下方式填写
-```bash
+````bash
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
@@ -188,17 +189,18 @@ deploy:
 # 仓库名字 
   repo: git@github.com:username/uername.github.io.git
   branch: master
-``` 
->repo填写Github创建的仓库名字，点击仓库页面的**Clone or download**处复制SSH形式url
+````
+> repo填写Github创建的仓库名字，点击仓库页面的**Clone or download**处复制SSH形式url
 
 ![仓库地址](http://ogvm9vr0q.bkt.clouddn.com/blog/20170430/repo_url.png)
+
 配置好后执行部署命令：
-```bash
+````bash
 hexo generate # 生成静态页面，或者hexo g
 hexo deploy   # 部署到Github，或者hexo d
-```
+````
 如果出现下面的提示表示成功
-```
+````
 INFO Deploy done: git
 ```
 这时候浏览器访问`uername.github.io`，就可以访问自己的博客了。到此博客就算基本搭建好了。
