@@ -1,0 +1,775 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Vuejs," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="学了一小段时间的Vue，之前多多少少有了解一些它的原理，但是一直没能有机会梳理一遍。而且之前在面试中也被问到过，才发现自己居然说不出来。因此这样让我下定决心自己按照Vue的原理实现一遍简单的MVVM框架。">
+<meta name="keywords" content="Vuejs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue原理及实现">
+<meta property="og:url" content="http://yoursite.com/2017/08/02/Vue原理及实现/index.html">
+<meta property="og:site_name" content="Jian&#39;s Blog">
+<meta property="og:description" content="学了一小段时间的Vue，之前多多少少有了解一些它的原理，但是一直没能有机会梳理一遍。而且之前在面试中也被问到过，才发现自己居然说不出来。因此这样让我下定决心自己按照Vue的原理实现一遍简单的MVVM框架。">
+<meta property="og:image" content="https://sfault-image.b0.upaiyun.com/349/066/349066591-59157f40dbd7a_articlex">
+<meta property="og:updated_time" content="2017-08-04T13:14:40.191Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vue原理及实现">
+<meta name="twitter:description" content="学了一小段时间的Vue，之前多多少少有了解一些它的原理，但是一直没能有机会梳理一遍。而且之前在面试中也被问到过，才发现自己居然说不出来。因此这样让我下定决心自己按照Vue的原理实现一遍简单的MVVM框架。">
+<meta name="twitter:image" content="https://sfault-image.b0.upaiyun.com/349/066/349066591-59157f40dbd7a_articlex">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/08/02/Vue原理及实现/"/>
+
+
+
+
+
+  <title>Vue原理及实现 | Jian's Blog</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Jian's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/02/Vue原理及实现/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jian">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Jian's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Vue原理及实现
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-02T22:53:22+08:00">
+                2017-08-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/js/" itemprop="url" rel="index">
+                    <span itemprop="name">js</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/js/Vuejs/" itemprop="url" rel="index">
+                    <span itemprop="name">Vuejs</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>学了一小段时间的Vue，之前多多少少有了解一些它的原理，但是一直没能有机会梳理一遍。而且之前在面试中也被问到过，才发现自己居然说不出来。因此这样让我下定决心自己按照Vue的原理实现一遍简单的MVVM框架。<br><a id="more"></a><br>本文实现除了参考<a href="https://github.com/vuejs/vue" title="Vuejs" target="_blank" rel="external">官方源码Vuejs</a>，还参考<a href="https://github.com/DMQ/mvvm" target="_blank" rel="external">开源仓库</a>，在此做出说明。</p>
+<h2 id="响应式原理"><a href="#响应式原理" class="headerlink" title="响应式原理"></a>响应式原理</h2><blockquote>
+<p>把一个普通JavaScript对象传给Vue实例的data选项，Vue将遍历此对象所有的属性，并使用Object.defineProperty把这些属性全部转为getter/setter。Object.defineProperty 是仅ES5支持，且无法shim的特性，这也就是为什么Vue不支持IE8以及更低版本浏览器的原因</p>
+</blockquote>
+<p><a href="https://segmentfault.com/a/1190000007434923" target="_blank" rel="external">了解更多defineProperty</a></p>
+<p>Vue.js是采用<code>Object.defineProperty</code>的<code>getter</code>和<code>setter</code>，也叫数据劫持，并结合观察者模式来实现数据绑定的。<br><img src="https://sfault-image.b0.upaiyun.com/349/066/349066591-59157f40dbd7a_articlex" alt="image"></p>
+<ul>
+<li>Observer数据监听器，能够对数据对象的所有属性进行监听，如有变动可拿到最新值并通知订阅者，内部采用Object.defineProperty的getter和setter来实现。</li>
+<li>Compile指令解析器，它的作用对每个元素节点的指令进行扫描和解析，根据指令模板替换数据，以及绑定相应的更新函数。</li>
+<li>Watcher订阅者， 作为连接Observer和Compile的桥梁，能够订阅并收到每个属性变动的通知，执行指令绑定的相应回调函数。</li>
+<li>Dep消息订阅器，内部维护了一个数组，用来收集订阅者（Watcher），数据变动触发notify函数，再调用订阅者的update方法。</li>
+</ul>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><h3 id="Observer"><a href="#Observer" class="headerlink" title="Observer"></a>Observer</h3><p>首先我们使用ES5的<code>Object.defineProperty</code>来实现属性的监听。对要绑定的<code>data</code>对象的属性依次设置<code>getter</code>和<code>setter</code>。<code>data</code> 子属性也需要监听。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> Observer = <span class="function"><span class="keyword">function</span> <span class="title">Observer</span>(<span class="params">data</span>)</span>&#123;</div><div class="line">    <span class="keyword">this</span>.data = data;</div><div class="line">    <span class="comment">//遍历属性设置响应</span></div><div class="line">    <span class="keyword">this</span>.walk(data);</div><div class="line">&#125;</div><div class="line"></div><div class="line">Observer.prototype = &#123;</div><div class="line">    <span class="comment">//遍历属性设置响应</span></div><div class="line">    walk: <span class="function"><span class="keyword">function</span>(<span class="params">obj</span>)</span>&#123;</div><div class="line">        <span class="built_in">Object</span>.keys(obj).forEach(<span class="function"><span class="params">key</span> =&gt;</span> <span class="keyword">this</span>.defineReactive(obj, key, obj[key]));</div><div class="line">    &#125;,</div><div class="line">    <span class="comment">//设置属性响应</span></div><div class="line">    defineReactive: <span class="function"><span class="keyword">function</span>(<span class="params">data, key, val</span>)</span>&#123;</div><div class="line">        <span class="comment">// 递归监听子属性</span></div><div class="line">        observe(val);</div><div class="line">        <span class="comment">// 定义setter和getter</span></div><div class="line">        <span class="built_in">Object</span>.defineProperty(data, key, &#123;</div><div class="line">            <span class="attr">enumerable</span>: <span class="literal">true</span>,</div><div class="line">            <span class="attr">configurable</span>: <span class="literal">true</span>,</div><div class="line">            <span class="attr">get</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">                <span class="keyword">return</span> val;</div><div class="line">            &#125;,</div><div class="line">            <span class="attr">set</span>: <span class="function"><span class="keyword">function</span>(<span class="params">newVal</span>)</span>&#123;</div><div class="line">                <span class="keyword">if</span> (val === newVal) <span class="keyword">return</span>;</div><div class="line">                <span class="built_in">console</span>.log(key + <span class="string">': '</span> + val + <span class="string">' --&gt; '</span> + newVal);</div><div class="line">                <span class="keyword">if</span> (<span class="keyword">typeof</span> newVal == <span class="string">'object'</span>) &#123;</div><div class="line">                    observe(newVal);</div><div class="line">                &#125;</div><div class="line">                val = newVal;</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们监听如下<code>data</code>对象，一切都很好，但是使用Array的push等方法并不会被监听到。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> data = &#123;</div><div class="line">    <span class="attr">name</span>: <span class="string">'hsj'</span>,</div><div class="line">    <span class="attr">msg</span>: <span class="string">'hello'</span>,</div><div class="line">    <span class="attr">todos</span>: [<span class="string">''</span>]</div><div class="line">&#125;;</div><div class="line">observe(data);</div><div class="line">data.msg = <span class="string">'hi'</span>;                 <span class="comment">//msg: hello --&gt; hi</span></div><div class="line">data.todos = [<span class="string">'study'</span>, <span class="string">'work'</span>];  <span class="comment">//todos: --&gt; study,work</span></div><div class="line">data.todos[<span class="number">0</span>] = <span class="string">'sleep'</span>;         <span class="comment">//0: study --&gt; sleep</span></div><div class="line">data.todos.push(<span class="string">'sleep'</span>);        <span class="comment">//3 没有监听到变化</span></div></pre></td></tr></table></figure>
+<p>为了实现监听数组，我们自然要改写操作数组的方法，但是又不能改写原生Array原型中的方法。简单的方法是使用<code>Object.create</code>继承Array的原型创建一个新对象<code>arrFakeProto</code>，用这个对象替换需要监听的数组的原型。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> arrProto = <span class="built_in">Array</span>.prototype,</div><div class="line">    arrFakeProto = <span class="built_in">Object</span>.create(arrProto),</div><div class="line">    arrMethods = [<span class="string">'push'</span>, <span class="string">'pop'</span>, <span class="string">'shift'</span>, <span class="string">'unshift'</span>, <span class="string">'splice'</span>, <span class="string">'sort'</span>, <span class="string">'reverse'</span>];</div><div class="line">arrMethods.forEach(<span class="function"><span class="keyword">function</span> (<span class="params">method</span>)</span>&#123;</div><div class="line">    <span class="keyword">let</span> original = arrProto[method];</div><div class="line">    arrFakeProto[method] = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">        <span class="keyword">let</span> arr = <span class="keyword">this</span>.concat(),</div><div class="line">            <span class="comment">//这里我们就能监听到变化了，调用原生的数组方法</span></div><div class="line">            res = original.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</div><div class="line">        <span class="built_in">console</span>.log(arr + <span class="string">' --&gt; '</span> + <span class="keyword">this</span>);</div><div class="line">        <span class="keyword">return</span> res;</div><div class="line">    &#125;</div><div class="line">&#125;)</div></pre></td></tr></table></figure></p>
+<p>看看操作数组的监听效果<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> arr = [<span class="string">'study'</span>, <span class="string">'work'</span>];</div><div class="line"><span class="built_in">Object</span>.setPrototypeOf(arr, arrFakeProto);</div><div class="line">arr.push(<span class="string">'sleep'</span>);     <span class="comment">//study,work --&gt; study,work,sleep   3</span></div><div class="line"><span class="built_in">Array</span>.isArray(arr)     <span class="comment">//true</span></div></pre></td></tr></table></figure></p>
+<p>综上，我们得到完整的observe代码<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> arrProto = <span class="built_in">Array</span>.prototype,</div><div class="line">    arrFakeProto = <span class="built_in">Object</span>.create(arrProto),</div><div class="line">    arrMethods = [<span class="string">'push'</span>, <span class="string">'pop'</span>, <span class="string">'shift'</span>, <span class="string">'unshift'</span>, <span class="string">'splice'</span>, <span class="string">'sort'</span>, <span class="string">'reverse'</span>];</div><div class="line">arrMethods.forEach(<span class="function"><span class="keyword">function</span> (<span class="params">method</span>)</span>&#123;</div><div class="line">    <span class="keyword">var</span> original = arrProto[method];</div><div class="line">    arrFakeProto[method] = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">        <span class="keyword">var</span> arr = <span class="keyword">this</span>.concat(),</div><div class="line">            <span class="comment">//这里我们就能监听到变化了，调用原生的数组方法</span></div><div class="line">            res = original.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</div><div class="line">        <span class="built_in">console</span>.log(arr + <span class="string">' --&gt; '</span> + <span class="keyword">this</span>);</div><div class="line">        <span class="keyword">return</span> res;</div><div class="line">    &#125;</div><div class="line">&#125;)</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">var</span> Observer = <span class="function"><span class="keyword">function</span> <span class="title">Observer</span>(<span class="params">data</span>)</span>&#123;</div><div class="line">    <span class="keyword">this</span>.data = data;</div><div class="line">    <span class="comment">// 遍历属性设置响应</span></div><div class="line">    <span class="keyword">if</span> (<span class="built_in">Array</span>.isArray(data)) &#123;</div><div class="line">        <span class="comment">// 替换数组原型</span></div><div class="line">        <span class="built_in">Object</span>.setPrototypeOf(data, arrFakeProto);</div><div class="line">        <span class="keyword">this</span>.observeArray(data);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">this</span>.walk(data);</div><div class="line">&#125;</div><div class="line"></div><div class="line">Observer.prototype = &#123;</div><div class="line">    <span class="comment">//遍历属性设置响应</span></div><div class="line">    walk: <span class="function"><span class="keyword">function</span>(<span class="params">obj</span>)</span>&#123;</div><div class="line">        <span class="built_in">Object</span>.keys(obj).forEach(<span class="function"><span class="params">key</span> =&gt;</span> <span class="keyword">this</span>.defineReactive(obj, key, obj[key]));</div><div class="line">    &#125;,</div><div class="line">    <span class="comment">//设置属性响应</span></div><div class="line">    defineReactive: <span class="function"><span class="keyword">function</span>(<span class="params">data, key, val</span>)</span>&#123;</div><div class="line">        <span class="comment">// 递归监听子属性</span></div><div class="line">        observe(val);</div><div class="line">        <span class="comment">// 定义setter和getter</span></div><div class="line">        <span class="built_in">Object</span>.defineProperty(data, key, &#123;</div><div class="line">            <span class="attr">enumerable</span>: <span class="literal">true</span>,</div><div class="line">            <span class="attr">configurable</span>: <span class="literal">true</span>,</div><div class="line">            <span class="attr">get</span>: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">                <span class="keyword">return</span> val;</div><div class="line">            &#125;,</div><div class="line">            <span class="attr">set</span>: <span class="function"><span class="keyword">function</span>(<span class="params">newVal</span>)</span>&#123;</div><div class="line">                <span class="keyword">if</span> (val === newVal) <span class="keyword">return</span>;</div><div class="line">                <span class="built_in">console</span>.log(key + <span class="string">': '</span> + val + <span class="string">' --&gt; '</span> + newVal);</div><div class="line">                <span class="keyword">if</span> (<span class="keyword">typeof</span> newVal == <span class="string">'object'</span>) &#123;</div><div class="line">                    observe(newVal);</div><div class="line">                &#125;</div><div class="line">                val = newVal;</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line">    &#125;,</div><div class="line">    <span class="comment">//监听数组</span></div><div class="line">    observeArray: <span class="function"><span class="keyword">function</span>(<span class="params">items</span>)</span>&#123;</div><div class="line">        items.forEach(<span class="function"><span class="params">item</span> =&gt;</span> observe(item));</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//监听data</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">observe</span>(<span class="params">data</span>)</span>&#123;</div><div class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> data !== <span class="string">'object'</span>) &#123;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Observer(data);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>以上代码中，array和object分开监听，array监听数组操作方法，但是还有个问题，那就是新增加的数组元素，没有被监听。当然其实在重写push等方法中也可以重新对添加的元素进行监听。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">let</span> data = &#123;</div><div class="line">    <span class="attr">name</span>: <span class="string">'hsj'</span>,</div><div class="line">    <span class="attr">msg</span>: <span class="string">'hello'</span>,</div><div class="line">    <span class="attr">todos</span>: [<span class="string">''</span>]</div><div class="line">&#125;;</div><div class="line">observe(data);</div><div class="line">data.msg = <span class="string">'hi'</span>;                 <span class="comment">//msg: hello --&gt; hi</span></div><div class="line">data.todos = [<span class="string">'study'</span>, <span class="string">'work'</span>];  <span class="comment">//todos: --&gt; study,work</span></div><div class="line">data.todos[<span class="number">0</span>] = <span class="string">'sleep'</span>;         <span class="comment">//0: study --&gt; sleep</span></div><div class="line">data.todos.push(<span class="string">'sleep'</span>);        <span class="comment">//sleep,work --&gt; sleep,work,sleep  3</span></div></pre></td></tr></table></figure></p>
+<p>至此，简单的监听已经实现了，但是还需要做一件事情，那就是在监听到变化后通知订阅者<code>Watcher</code>，因此还需要实现上文说的消息订阅器Dep，内部维护一个数组，用来收集订阅者（Watcher），数据变动触发notify函数，再调用订阅者的update方法。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Vuejs/" rel="tag"># Vuejs</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/31/博客部署/" rel="next" title="博客部署">
+                <i class="fa fa-chevron-left"></i> 博客部署
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.png"
+               alt="Jian" />
+          <p class="site-author-name" itemprop="name">Jian</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/Ytime/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:752296035@qq.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-envelope"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#响应式原理"><span class="nav-number">1.</span> <span class="nav-text">响应式原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现"><span class="nav-number">2.</span> <span class="nav-text">实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Observer"><span class="nav-number">2.1.</span> <span class="nav-text">Observer</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jian</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>
